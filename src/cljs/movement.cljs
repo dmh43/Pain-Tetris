@@ -1,4 +1,4 @@
-(ns hello-quil.movement)
+(ns pain-tetris.movement)
 
 (defn shift-right
   [{:keys [x-pos y-pos] :as vertex} dist]

@@ -1,4 +1,4 @@
-(defproject hello-quil "0.1.0-SNAPSHOT"
+(defproject pain-tetris "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -26,10 +26,10 @@
 
   :clean-targets ^{:protect false} [:target-path :compile-path "resources/public/js"]
 
-  :uberjar-name "hello-quil.jar"
+  :uberjar-name "pain-tetris.jar"
 
   ;; Use `lein run` if you just want to start a HTTP server, without figwheel
-  :main hello-quil.server
+  :main pain-tetris.server
 
   ;; nREPL by default starts in the :main namespace, we want to start in `user`
   ;; because that's where our development helper functions like (run) and
@@ -42,11 +42,11 @@
 
                 :figwheel true
                 ;; Alternatively, you can configure a function to run every time figwheel reloads.
-                ;; :figwheel {:on-jsload "hello-quil.core/on-figwheel-reload"}
+                ;; :figwheel {:on-jsload "pain-tetris.core/on-figwheel-reload"}
 
-                :compiler {:main hello-quil.core
+                :compiler {:main pain-tetris.core
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/hello_quil.js"
+                           :output-to "resources/public/js/compiled/pain_tetris.js"
                            :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp true}}}}
 
@@ -101,7 +101,7 @@
                            {:source-paths ["src/cljs" "test/cljs"]
                             :compiler
                             {:output-to "resources/public/js/compiled/testable.js"
-                             :main hello-quil.test-runner
+                             :main pain-tetris.test-runner
                              :optimizations :none}}}}}
 
              :repl-options {:init (do

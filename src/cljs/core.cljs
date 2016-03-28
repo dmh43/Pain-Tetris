@@ -1,11 +1,10 @@
-(ns hello-quil.core
+(ns pain-tetris.core
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
-            [hello-quil.frame :as f]
-            [hello-quil.shapes :as sh]
-            [hello-quil.paths :as p]
-            [hello-quil.util :as util]
-            [hello-quil.movement :as mo]
+            [pain-tetris.frame :as f]
+            [pain-tetris.shapes :as sh]
+            [pain-tetris.util :as util]
+            [pain-tetris.movement :as mo]
             [devtools.core :as devtools]))
 
 (devtools/enable-feature! :sanity-hints :dirac)
@@ -20,8 +19,8 @@
   ; circle color and position.
   {:color 0
    :block-speed 5
-   :shapes [(p/build-poly 0 0 (p/square 10))
-            (p/build-poly 100 8 (p/L 10))]})
+   :shapes [(sh/build-poly 0 0 (sh/square 10))
+            (sh/build-poly 100 8 (sh/L 10))]})
 
 (defn update-state [state]
   ; Update sketch state by changing circle color and position.
@@ -31,6 +30,7 @@
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
   (q/background 240)
+  (sh/draw-piece sh/L-blocks)
   ; Set circle color.
   (q/fill (:color state) 255 255)
   (q/no-stroke)
@@ -41,8 +41,8 @@
     (doseq [poly (:shapes state)]
       (sh/draw-poly poly))))
 
-(q/defsketch hello-quil
-  :host "hello-quil"
+(q/defsketch pain-tetris
+  :host "pain-tetris"
   :size [500 500]
   ; setup function called only once, during sketch initialization.
   :setup setup

@@ -1,4 +1,4 @@
-(ns hello-quil.frame
+(ns pain-tetris.frame
   (:require [quil.core :as q :include-macros true]))
 
 (defn right-bounds []
