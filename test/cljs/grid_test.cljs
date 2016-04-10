@@ -4,21 +4,28 @@
             [pain-tetris.grid :as g]))
 
 (deftest grid
-  (let [grid (g/build-grid 100 100)
+  (let [grid (g/build-grid 10 10)
         one-block-grid (g/insert-piece grid :square :bottom)
-        full-grid (g/full-grid grid)]
+        full-grid (g/full-grid grid)
+        coords [0 0]]
     (testing "insert piece"
       (testing "can be inserted?"
         (is (g/can-insert? grid :square :top))
         (is (g/can-insert? grid :square :bottom))
         (is (g/can-insert? one-block-grid :square :top))
-        (is (not (g/can-insert? one-block-grid :square :bottom)))))
+        (is (not (g/can-insert? one-block-grid :square :bottom))))
+      (testing "place block"
+        (is (g/is-occupied? (g/place-block coords) coords))))
     (testing "Block below or above?"
-      (is (not (g/block-below grid g/top-center)))
-      (is (g/block-above one-block-grid g/bottom-center)))
+      (is (not (g/block-below grid :top-center)))
+      (is (g/block-above one-block-grid :bottom-center)))
     (testing "full row?"
       (is (not (g/full-row? grid 0)))
       (is (not (g/full-row? one-block-grid 0)))
       (is (g/full-row? full-grid 0))
       (is (g/full-row? full-grid 1))
-      (is (g/full-row? full-grid 5)))))
+      (is (g/full-row? full-grid 5)))
+    (testing "full grid?"
+      (is (not (g/full-grid? grid)))
+      (is (not (g/full-grid? one-block-grid)))
+      (is (g/full-grid? full-grid)))))

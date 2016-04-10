@@ -1,4 +1,4 @@
-(ns pain-tetris.shapes
+(ns pain-tetris.pieces
   (:require [quil.core :as q :include-macros true]))
 
 (def block-size 10)
@@ -15,3 +15,12 @@
   [piece]
   (doseq [block piece]
     (draw-block block)))
+
+(defn base-coords
+  [shape]
+  (case shape
+    :square [0 0] [0 1] [1 0] [1 1]))
+
+(defn block-coords
+  [shape top-left-coords]
+  (mapv + (base-coords shape) top-left-coords))
