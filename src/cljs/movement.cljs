@@ -31,3 +31,6 @@
 (defn gravity
   [dir pieces dist]
   (mapv #(translate dir % dist) pieces))
+
+(defn can-move?
+  [grid block-coords dir])

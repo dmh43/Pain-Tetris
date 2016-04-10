@@ -1,6 +1,5 @@
 (ns pain-tetris.grid)
 
-(def full-grid)
 (def top-center)
 (def bottom-center)
 
@@ -18,3 +17,6 @@
 
 (defn full-row?
   [grid row-num])
+
+(defn full-grid
+  [grid])
