@@ -19,18 +19,16 @@
   ; circle color and position.
   {:color 0
    :block-speed 5
-   :shapes [(sh/build-poly 0 0 (sh/square 10))
-            (sh/build-poly 100 8 (sh/L 10))]})
+   :pieces []})
 
 (defn update-state [state]
   ; Update sketch state by changing circle color and position.
   {:color (mod (+ (:color state) 0.7) 255)
-   :shapes (f/keep-in-frame (mo/gravity (:shapes state) :right 10))})
+   :shapes (f/keep-in-frame (mo/gravity :right (:shapes state) 10))})
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
   (q/background 240)
-  (sh/draw-piece sh/L-blocks)
   ; Set circle color.
   (q/fill (:color state) 255 255)
   (q/no-stroke)
@@ -38,12 +36,12 @@
   (q/with-translation [(/ (q/width) 2)
                        (/ (q/height) 2)]
                                         ; Draw the circle.
-    (doseq [poly (:shapes state)]
-      (sh/draw-poly poly))))
+    (doseq [piece (:pieces state)]
+      (sh/draw-piece piece))))
 
 (q/defsketch pain-tetris
   :host "pain-tetris"
-  :size [500 500]
+  :size [300 500]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.

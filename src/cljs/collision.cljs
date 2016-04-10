@@ -1,0 +1,3 @@
+(ns pain-tetris.collision)
+
+()

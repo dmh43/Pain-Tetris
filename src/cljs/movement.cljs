@@ -1,33 +1,33 @@
 (ns pain-tetris.movement)
 
 (defn shift-right
-  [{:keys [x-pos y-pos] :as vertex} dist]
-  (update vertex :x-pos #(+ % dist)))
+  [{:keys [x-pos y-pos] :as center} dist]
+  (update center :x-pos #(+ % dist)))
 
 (defn shift-left
-  [{:keys [x-pos y-pos] :as vertex} dist]
-  (update vertex :x-pos #(- % dist)))
+  [{:keys [x-pos y-pos] :as center} dist]
+  (update center :x-pos #(- % dist)))
 
 (defn shift-up
-  [{:keys [x-pos y-pos] :as vertex} dist]
-  (update vertex :y-pos #(- % dist)))
+  [{:keys [x-pos y-pos] :as center} dist]
+  (update center :y-pos #(- % dist)))
 
 (defn shift-down
-  [{:keys [x-pos y-pos] :as vertex} dist]
-  (update vertex :y-pos #(+ % dist)))
+  [{:keys [x-pos y-pos] :as center} dist]
+  (update center :y-pos #(+ % dist)))
 
 (defn shift
-  [dir vertex dist]
+  [dir center dist]
   ((case dir
      :right shift-right
      :left shift-left
      :up shift-up
-     :down shift-down) vertex dist))
+     :down shift-down) center dist))
 
 (defn translate
-  [shape dir dist]
-  (update shape :top-left #(shift dir % dist)))
+  [dir piece dist]
+  (mapv #(shift dir % dist) piece))
 
 (defn gravity
-  [shapes dir dist]
-  (map #(translate % dir dist) shapes))
+  [dir pieces dist]
+  (mapv #(translate dir % dist) pieces))
