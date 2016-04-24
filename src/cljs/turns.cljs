@@ -38,7 +38,12 @@
 (defn game-over
   []
   (js/clearInterval @timer)
-  (js/console.log "game over!!"))
+  (js/console.log "game over!!")
+  (go
+    (while (not (g/full-grid? @grid))
+      (swap! grid #(g/insert-block % (first (g/empty-locs @grid))))
+      (g/increment-piece-counter)
+      (<! (timeout 5)))))
 
 (declare start-game)
 
@@ -73,6 +78,7 @@
   []
   (when @timer
     (js/clearInterval @timer))
+  (reset! points 0)
   (reset! timer (js/setInterval next-turn (/ 1000 @block-speed))))
 
 (defn key-pressed

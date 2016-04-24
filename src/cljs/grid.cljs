@@ -90,6 +90,18 @@
   (let [coords-above (sub coords y-hat)]
     (is-occupied? grid coords-above)))
 
+(defn index-to-coords
+  [grid index]
+  (let [{:keys [width height]} (dims grid)
+        y (int (/ index width))
+        x (int (- index (* y width)))]
+    [x y]))
+
+(defn all-coords
+  [grid]
+  (map (partial index-to-coords grid)
+       (range (apply * ((juxt :width :height) (dims grid))))))
+
 (defn full-row?
   [grid row-num]
   (let [row (mapv #(get % row-num) grid)]
@@ -101,16 +113,8 @@
 
 (defn full-grid?
   [grid]
-  (reduce (fn [acc row-num]
-            (full-row? grid row-num))
-          (range (count grid))))
-
-(defn index-to-coords
-  [grid index]
-  (let [{:keys [width height]} (dims grid)
-        y (int (/ index width))
-        x (int (- index (* y width)))]
-    [x y]))
+  (every? (partial is-occupied? grid)
+          (all-coords grid)))
 
 (defn piece-num-to-coords
   [grid piece-num]
@@ -174,3 +178,12 @@
 (defn get-current-piece
   []
   (dec (get-piece-counter)))
+
+(defn empty-locs
+  [grid]
+  (reduce (fn [acc coords]
+            (if (not (is-occupied? grid coords))
+              (conj acc coords)
+              acc))
+          []
+          (all-coords grid)))

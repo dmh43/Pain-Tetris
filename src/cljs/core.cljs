@@ -22,6 +22,7 @@
       (dom/div #js {:id "new-game"
                        :onClick (fn []
                                   (swap! t/grid g/clear-grid)
+                                  (reset! g/piece-counter 0)
                                   (t/start-game))}
                   (r/glyphicon {:glyph "refresh"})))))
 
@@ -48,7 +49,7 @@
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
-  (q/frame-rate 30)
+  (q/frame-rate 10)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
   (t/start-game)
