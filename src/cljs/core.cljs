@@ -18,7 +18,9 @@
   (reify
     om/IRender
     (render [this]
-      (dom/button #js {:onClick #(swap! t/grid g/clear-grid)} "Clear"))))
+      (dom/button #js {:onClick (fn []
+                                  (swap! t/grid g/clear-grid)
+                                  (t/start-game))} "New Game"))))
 
 (set! (.-onload js/window)
       #(om/root clear-button "data"

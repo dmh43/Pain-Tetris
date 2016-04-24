@@ -18,6 +18,8 @@
 (defonce drop-side (atom :top))
 (defonce gravity-direction (atom :down))
 
+(def points (atom 0))
+
 (defonce grid (atom (g/build-grid (:width grid-dims) (:height grid-dims))))
 
 (defn timeout [ms]
@@ -35,6 +37,7 @@
 
 (defn game-over
   []
+  (js/clearInterval @timer)
   (js/console.log "game over!!"))
 
 (declare start-game)
@@ -47,8 +50,8 @@
   (go
     (while (not (m/pieces-stopped? @grid @gravity-direction))
       (swap! grid #(m/gravity % @gravity-direction))
-      (<! (timeout 100)))
-    (js/clearInterval timer)
+      (<! (timeout (/ 100 block-speed))))
+    (js/clearInterval @timer)
     (start-game)))
 
 (defn next-turn
@@ -66,6 +69,8 @@
 
 (defn start-game
   []
+  (when @timer
+    (js/clearInterval @timer))
   (reset! timer (js/setInterval next-turn (/ 1000 @block-speed))))
 
 (defn key-pressed
