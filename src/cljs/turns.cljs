@@ -61,11 +61,13 @@
       (if (g/can-insert? @grid piece (g/side-to-coords @grid @drop-side))
         (swap! grid #(g/drop-piece % piece @drop-side))
         (game-over))))
-  (when (= 0 (rand-nth (range 10)))
-    (flip-game))
-  (swap! grid g/clear-full-rows)
-  (swap! grid #(m/gravity % @gravity-direction))
-  (swap! turn-counter inc))
+  (if (= 0 (rand-nth (range 10)))
+    (flip-game)
+    (do
+      (swap! points (partial + (count (g/full-rows @grid))))
+      (swap! grid (partial g/clear-full-rows))
+      (swap! grid #(m/gravity % @gravity-direction))
+      (swap! turn-counter inc))))
 
 (defn start-game
   []

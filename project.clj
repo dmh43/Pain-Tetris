@@ -13,7 +13,8 @@
                  [compojure "1.4.0"]
                  [org.omcljs/om "1.0.0-alpha28"]
                  [environ "1.0.2"]
-                 [quil "2.4.0"]]
+                 [quil "2.4.0"]
+                 [racehub/om-bootstrap "0.5.0"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
             [lein-environ "1.0.1"]]
