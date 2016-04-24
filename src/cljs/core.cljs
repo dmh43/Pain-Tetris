@@ -1,53 +1,68 @@
 (ns pain-tetris.core
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
-            [pain-tetris.frame :as f]
-            [pain-tetris.shapes :as sh]
+            [pain-tetris.pieces :as p]
             [pain-tetris.util :as util]
             [pain-tetris.movement :as mo]
+            [pain-tetris.grid :as g]
+            [pain-tetris.draw :as d]
+            [pain-tetris.turns :as t]
+            [om.core :as om]
+            [om.dom :as dom]
             [devtools.core :as devtools]))
 
 (devtools/enable-feature! :sanity-hints :dirac)
 (devtools/install!)
+
+(defn clear-button [data owner]
+  (reify
+    om/IRender
+    (render [this]
+      (dom/button #js {:onClick #(swap! t/grid g/clear-grid)} "Clear"))))
+
+(set! (.-onload js/window)
+      #(om/root clear-button "data"
+                {:target (. js/document (getElementById "painTetris"))}))
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
   (q/frame-rate 30)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
-  ; setup function returns initial state. It contains
-  ; circle color and position.
+  (t/start-game)
   {:color 0
-   :block-speed 5
-   :pieces []})
+   :game (apply q/create-graphics (d/game-size t/grid-dims))
+   :border (apply q/create-graphics (d/canvas-size t/grid-dims))})
 
 (defn update-state [state]
-  ; Update sketch state by changing circle color and position.
-  {:color (mod (+ (:color state) 0.7) 255)
-   :shapes (f/keep-in-frame (mo/gravity :right (:shapes state) 10))})
+  state)
 
 (defn draw-state [state]
-  ; Clear the sketch by filling it with light-grey color.
-  (q/background 240)
-  ; Set circle color.
-  (q/fill (:color state) 255 255)
-  (q/no-stroke)
-  ; Calculate x and y coordinates of the circle.
-  (q/with-translation [(/ (q/width) 2)
-                       (/ (q/height) 2)]
-                                        ; Draw the circle.
-    (doseq [piece (:pieces state)]
-      (sh/draw-piece piece))))
+  (let [game (get state :game)
+        border (get state :border)]
+    (.beginDraw border)
+    (q/background 255 255 255 0)
+    (.endDraw border)
+    (.beginDraw game)
+    (q/fill 255)
+    (d/clear-game t/grid-dims)
+    (q/stroke-weight 0)
+    (q/stroke-join :round)
+    (d/draw-grid @t/grid)
+    (.endDraw game)
+    ))
 
-(q/defsketch pain-tetris
-  :host "pain-tetris"
-  :size [300 500]
-  ; setup function called only once, during sketch initialization.
+(defn fig-reload-hook
+  []
+  (swap! t/timer js/clearInterval))
+
+(q/defsketch canvas
+  :host "canvas"
+  :size (d/canvas-size t/grid-dims)
   :setup setup
-  ; update-state is called on each iteration before draw-state.
   :update update-state
   :draw draw-state
-  ; This sketch uses functional-mode middleware.
-  ; Check quil wiki for more info about middlewares and particularly
-  ; fun-mode.
-  :middleware [m/fun-mode])
+  :key-pressed t/key-pressed
+  :middleware [m/fun-mode]
+  :features [:global-key-events]
+  :settings q/smooth)

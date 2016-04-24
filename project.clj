@@ -40,9 +40,9 @@
               {:app
                {:source-paths ["src/cljs"]
 
-                :figwheel true
+                ;; :figwheel true
                 ;; Alternatively, you can configure a function to run every time figwheel reloads.
-                ;; :figwheel {:on-jsload "pain-tetris.core/on-figwheel-reload"}
+                :figwheel {:on-jsload "pain-tetris.core/fig-reload-hook"}
 
                 :compiler {:main pain-tetris.core
                            :asset-path "js/compiled/out"

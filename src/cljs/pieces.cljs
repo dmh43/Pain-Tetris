@@ -1,26 +1,29 @@
 (ns pain-tetris.pieces
   (:require [quil.core :as q :include-macros true]))
 
-(def block-size 10)
-
-(def L
-  [{:x-pos 0 :y-pos 0} {:x-pos 0 :y-pos 10} {:x-pos 10 :y-pos 10}
-   {:x-pos 20 :y-pos 10}])
-
-(defn draw-block
-  [{:keys [x-pos y-pos]}]
-  (q/rect x-pos y-pos block-size block-size))
-
-(defn draw-piece
-  [piece]
-  (doseq [block piece]
-    (draw-block block)))
+(def pieces [:square :L :T :Z :|])
 
 (defn base-coords
   [shape]
   (case shape
-    :square [0 0] [0 1] [1 0] [1 1]))
+    :square [[0 0] [0 1]
+             [1 0] [1 1]]
+    :L [[0 0] [1 0] [2 0]
+        [0 1]]
+    :T [[0 0] [1 0] [2 0]
+        [1 1]]
+    :Z [[0 0] [1 0]
+        [1 1] [2 1]]
+    :| [[0 0] [1 0] [2 0] [3 0]]))
 
-(defn block-coords
+(defn get-shape-block-coords
   [shape top-left-coords]
-  (mapv + (base-coords shape) top-left-coords))
+  (let [blocks-coords (base-coords shape)
+        num-blocks (count blocks-coords)]
+    (mapv #(mapv + %1 %2)
+          blocks-coords
+          (take num-blocks (repeat top-left-coords)))))
+
+(defn random-piece
+  []
+  (rand-nth pieces))

@@ -1,5 +1,5 @@
 (ns pain-tetris.core-test
-  (:require-macros [cljs.test :refer (is deftest testing)])
+  (:require-macros [cljs.test :refer (is deftest testing run-tests)])
   (:require [cljs.test]))
 
 (deftest example-passing-test
