@@ -9,11 +9,7 @@
             [pain-tetris.turns :as t]
             [pain-tetris.components.root :as c.r]
             [om.dom :as dom]
-            [om.core :as om]
-            [devtools.core :as devtools]))
-
-(devtools/enable-feature! :sanity-hints :dirac)
-(devtools/install!)
+            [om.core :as om]))
 
 (set! (.-onload js/window)
       #(om/root c.r/root-component t/points
