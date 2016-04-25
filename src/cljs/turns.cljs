@@ -78,7 +78,6 @@
   []
   (when @timer
     (js/clearInterval @timer))
-  (reset! points 0)
   (reset! timer (js/setInterval next-turn (/ 1000 @block-speed))))
 
 (defn key-pressed
