@@ -1,4 +1,4 @@
-(ns pain_tetris.server
+(ns pain-tetris.server
   (:require [clojure.java.io :as io]
             [compojure.core :refer [ANY GET PUT POST DELETE defroutes]]
             [compojure.route :refer [resources]]
