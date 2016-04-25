@@ -44,9 +44,114 @@
   [grid coords]
   (place-block grid coords (get-piece-counter)))
 
+(defn coords-below
+  [coords]
+  (add coords y-hat))
+
+(defn coords-above
+  [coords]
+  (sub coords y-hat))
+
+(defn coords-left
+  [coords]
+  (sub coords x-hat))
+
+(defn coords-right
+  [coords]
+  (add coords x-hat))
+
+(defn coords-ur
+  [coords]
+  (sub (add coords x-hat) y-hat))
+
+(defn coords-ul
+  [coords]
+  (sub (sub coords x-hat) y-hat))
+
+(defn block-below
+  [grid coords]
+  (get-in grid (coords-below coords)))
+
+(defn block-above
+  [grid coords]
+  (get-in grid (coords-above coords)))
+
+(defn block-left
+  [grid coords]
+  (get-in grid (coords-left coords)))
+
+(defn block-right
+  [grid coords]
+  (get-in grid (coords-right coords)))
+
+(defn block-ur
+  [grid coords]
+  (get-in grid (coords-ur coords)))
+
+(defn block-ul
+  [grid coords]
+  (get-in grid (coords-ul coords)))
+
 (defn remove-block
   [grid coords]
   (place-block grid coords :_))
+
+(defn get-contig-blocks
+  [grid coords]
+  (let [piece-num (get-in grid coords)]
+    (let [below (block-below grid coords)
+          left (block-left grid coords)
+          right (block-right grid coords)
+          above (block-above grid coords)]
+      (cond
+        (= below piece-num) (vector coords (coords-below coords))
+        (= left piece-num) (vector coords (coords-left coords))
+        (= right piece-num) (vector coords (coords-right coords))
+        (= above piece-num) (vector coords (coords-above coords))
+        :default (vector coords)))))
+
+(defn refresh-blocks
+  [grid blocks]
+  (let [new-grid
+        (reduce (fn [acc coords]
+                  (let [block (get-in acc coords)]
+                    (if (not= :_ block)
+                      (assoc-in acc coords @piece-counter)
+                      acc)))
+                grid
+                blocks)]
+    (increment-piece-counter)
+    (increment-piece-counter)
+    new-grid))
+
+(defn refresh-above
+  [grid coords]
+  (let [above (coords-above coords)
+        blocks-above (get-contig-blocks grid above)]
+    (refresh-blocks grid blocks-above)))
+
+(defn refresh-below
+  [grid coords]
+  (let [below (coords-below coords)
+        blocks-below (get-contig-blocks grid below)]
+    (refresh-blocks grid blocks-below)))
+
+(defn remove-block-splitting-piece
+  [grid coords]
+  (let [new-grid (remove-block grid coords)
+        below (block-below grid coords)
+        above (block-above grid coords)
+        ur (block-ur grid coords)
+        ul (block-ul grid coords)]
+    (if (and below above)
+      (cond
+        (= above below)
+        (refresh-above new-grid coords)
+        (or (= ul below) (= ur below))
+        (refresh-below new-grid coords)
+        :else
+        new-grid)
+      new-grid)))
 
 (defn can-insert?
   [grid shape coords]
@@ -79,16 +184,6 @@
   (let [new-grid (insert-piece grid piece side)]
     (increment-piece-counter)
     new-grid))
-
-(defn block-below
-  [grid coords]
-  (let [coords-below (add coords y-hat)]
-    (is-occupied? grid coords-below)))
-
-(defn block-above
-  [grid coords]
-  (let [coords-above (sub coords y-hat)]
-    (is-occupied? grid coords-above)))
 
 (defn index-to-coords
   [grid index]
@@ -149,7 +244,7 @@
 (defn clear-row
   [grid row-num]
   (reduce (fn [grid x]
-            (remove-block grid [x row-num]))
+            (remove-block-splitting-piece grid [x row-num]))
           grid
           (range (:width (dims grid)))))
 

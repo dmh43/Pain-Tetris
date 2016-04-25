@@ -61,18 +61,18 @@
 
 (defn next-turn
   []
-  (when (m/pieces-stopped? @grid @gravity-direction)
-    (let [piece (p/random-piece)]
-      (if (g/can-insert? @grid piece (g/side-to-coords @grid @drop-side))
-        (swap! grid #(g/drop-piece % piece @drop-side))
-        (game-over))))
   (if (= 0 (rand-nth (range 10)))
     (flip-game)
     (do
       (swap! points (partial + (count (g/full-rows @grid))))
       (swap! grid (partial g/clear-full-rows))
       (swap! grid #(m/gravity % @gravity-direction))
-      (swap! turn-counter inc))))
+      (swap! turn-counter inc)))
+  (when (m/pieces-stopped? @grid @gravity-direction)
+    (let [piece (p/random-piece)]
+      (if (g/can-insert? @grid piece (g/side-to-coords @grid @drop-side))
+        (swap! grid #(g/drop-piece % piece @drop-side))
+        (game-over)))))
 
 (defn start-game
   []
@@ -83,16 +83,17 @@
 
 (defn key-pressed
   [state]
-  (let [key (q/key-as-keyword)]
+  (let [key (q/key-as-keyword)
+        piece-num (g/get-current-piece)]
     (cond
       (some #(= % key) [:left :right])
-      (when (m/can-move? @grid (g/get-current-piece) key)
-        (swap! grid #(m/move % (g/get-current-piece) key)))
+      (when (m/can-move? @grid piece-num key)
+        (swap! grid #(m/move % piece-num key)))
       (= key :down)
-      (when (m/can-move? @grid (g/get-current-piece) @gravity-direction)
-        (swap! grid #(m/move % (g/get-current-piece) @gravity-direction)))
+      (when (m/can-move? @grid piece-num @gravity-direction)
+        (swap! grid #(m/move % piece-num @gravity-direction)))
       (= key :up)
-      (swap! grid #(m/rotate % (g/piece-num-to-coords @grid (g/get-current-piece))))
+      (swap! grid #(m/rotate % (g/piece-num-to-coords @grid piece-num)))
       (= key (keyword " "))
-      (swap! grid #(m/slam-piece % (g/get-current-piece) @gravity-direction)))
+      (swap! grid #(m/slam-piece % piece-num @gravity-direction)))
     state))
