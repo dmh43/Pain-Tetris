@@ -7,44 +7,16 @@
             [pain-tetris.grid :as g]
             [pain-tetris.draw :as d]
             [pain-tetris.turns :as t]
-            [om.core :as om]
+            [pain-tetris.components.root :as c.r]
             [om.dom :as dom]
-            [devtools.core :as devtools]
-            [om-bootstrap.random :as r]))
+            [om.core :as om]
+            [devtools.core :as devtools]))
 
 (devtools/enable-feature! :sanity-hints :dirac)
 (devtools/install!)
 
-(defn new-game-button [app-state owner]
-  (reify
-    om/IRender
-    (render [this]
-      (dom/div #js {:id "new-game"
-                       :onClick (fn []
-                                  (swap! t/grid g/clear-grid)
-                                  (reset! g/piece-counter 0)
-                                  (t/start-game))}
-                  (r/glyphicon {:glyph "refresh"})))))
-
-(defn points [app-state owner]
-  (reify
-    om/IRender
-    (render [this]
-      (js/console.log app-state)
-      (dom/div #js {:id "points"} app-state))))
-
-(defn root-component [app-state owner]
-  (reify
-    om/IRender
-    (render [this]
-      (js/console.log "app" app-state)
-      (dom/div
-       #js {:id "root"}
-       (om/build new-game-button nil)
-       (om/build points app-state)))))
-
 (set! (.-onload js/window)
-      #(om/root root-component t/points
+      #(om/root c.r/root-component t/points
                 {:target (. js/document (getElementById "painTetris"))}))
 
 (defn setup []
