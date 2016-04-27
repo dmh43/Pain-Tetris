@@ -11,8 +11,6 @@
                 :height 20})
 
 (defonce block-speed (atom 1))
-(defonce drop-rate (atom 5))
-
 (defonce timer (atom nil))
 (defonce turn-counter (atom 0))
 (defonce drop-side (atom :top))
@@ -66,9 +64,7 @@
       (swap! points (partial + (* (count rows-full)
                                   (count rows-full))))
       (when (> rows-full 0)
-        (if (even? rows-full)
-          (swap! drop-rate inc)
-          (swap! block-speed inc)))
+        (swap! block-speed inc))
       (swap! grid (partial g/clear-full-rows))
       (swap! grid #(m/gravity % @gravity-direction))
       (swap! turn-counter inc))
