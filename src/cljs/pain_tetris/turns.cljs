@@ -61,18 +61,24 @@
 
 (defn next-turn
   []
-  (if (= 0 (rand-nth (range 10)))
-    (flip-game)
+  (let [rows-full (g/full-rows @grid)]
     (do
-      (swap! points (partial + (count (g/full-rows @grid))))
+      (swap! points (partial + (* (count rows-full)
+                                  (count rows-full))))
+      (when (> rows-full 0)
+        (if (even? rows-full)
+          (swap! drop-rate inc)
+          (swap! block-speed inc)))
       (swap! grid (partial g/clear-full-rows))
       (swap! grid #(m/gravity % @gravity-direction))
-      (swap! turn-counter inc)))
-  (when (m/pieces-stopped? @grid @gravity-direction)
-    (let [piece (p/random-piece)]
-      (if (g/can-insert? @grid piece (g/side-to-coords @grid @drop-side))
-        (swap! grid #(g/drop-piece % piece @drop-side))
-        (game-over)))))
+      (swap! turn-counter inc))
+    (when (= 0 (rand-nth (range 10)))
+      (flip-game))
+    (when (m/pieces-stopped? @grid @gravity-direction)
+      (let [piece (p/random-piece)]
+        (if (g/can-insert? @grid piece (g/side-to-coords @grid @drop-side))
+          (swap! grid #(g/drop-piece % piece @drop-side))
+          (game-over))))))
 
 (defn start-game
   []

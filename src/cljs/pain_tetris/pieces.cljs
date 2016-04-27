@@ -1,11 +1,14 @@
 (ns pain-tetris.pieces
   (:require [quil.core :as q :include-macros true]))
 
-(def pieces [:square :L :T :Z :|])
+(def pieces [:square :backL :S :L :T :Z :|])
 
 (defn base-coords
   [shape]
   (case shape
+    :backL [[0 0] [1 0] [2 0] [2 1]]
+    :S [[1 0] [0 1]
+        [1 1] [2 0]]
     :square [[0 0] [0 1]
              [1 0] [1 1]]
     :L [[0 0] [1 0] [2 0]
