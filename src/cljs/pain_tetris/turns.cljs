@@ -63,7 +63,7 @@
     (do
       (swap! points (partial + (* (count rows-full)
                                   (count rows-full))))
-      (when (and (even? count) (> (count rows-full) 0))
+      (when (and (even? (count rows-full)) (> (count rows-full) 0))
         (swap! block-speed inc)
         (start-game @block-speed))
       (swap! grid (partial g/clear-full-rows))
