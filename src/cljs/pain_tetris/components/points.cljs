@@ -6,5 +6,4 @@
   (reify
     om/IRender
     (render [this]
-      (js/console.log app-state)
       (dom/div #js {:id "points"} app-state))))

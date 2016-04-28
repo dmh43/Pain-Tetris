@@ -8,7 +8,6 @@
   (reify
     om/IRender
     (render [this]
-      (js/console.log "app" app-state)
       (dom/div
        #js {:id "root"}
        (om/build c.ng/new-game-button nil)

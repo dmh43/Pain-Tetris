@@ -53,9 +53,9 @@
   (go
     (while (not (m/pieces-stopped? @grid @gravity-direction))
       (swap! grid #(m/gravity % @gravity-direction))
-      (<! (timeout (/ 100 block-speed))))
+      (<! (timeout (/ 100 @block-speed))))
     (js/clearInterval @timer)
-    (start-game)))
+    (start-game @block-speed)))
 
 (defn next-turn
   []
@@ -63,8 +63,9 @@
     (do
       (swap! points (partial + (* (count rows-full)
                                   (count rows-full))))
-      (when (> rows-full 0)
-        (swap! block-speed inc))
+      (when (and (even? count) (> (count rows-full) 0))
+        (swap! block-speed inc)
+        (start-game @block-speed))
       (swap! grid (partial g/clear-full-rows))
       (swap! grid #(m/gravity % @gravity-direction))
       (swap! turn-counter inc))
@@ -77,10 +78,10 @@
           (game-over))))))
 
 (defn start-game
-  []
+  [block-speed]
   (when @timer
     (js/clearInterval @timer))
-  (reset! timer (js/setInterval next-turn (/ 1000 @block-speed))))
+  (reset! timer (js/setInterval next-turn (/ 1000 block-speed))))
 
 (defn key-pressed
   [state]

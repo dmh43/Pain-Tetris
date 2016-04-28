@@ -20,7 +20,7 @@
   (q/frame-rate 10)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
-  (t/start-game)
+  (t/start-game @t/block-speed)
   {:color 0
    :game (apply q/create-graphics (d/game-size t/grid-dims))
    :border (apply q/create-graphics (d/canvas-size t/grid-dims))})

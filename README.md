@@ -1,6 +1,12 @@
 # Pain Tetris
 
-A twist on tetris which will likely cause a lot of pain and suffering.
+Pain Tetris will make you feel as though you know a thing or two, before reminding you that you actually don't. Pain Tetris will sometimes make you feel trapped and mistreated. And yet somehow things go on -- blocks are eliminated and your path is clear again. Pain Tetris will help you realize that even when things don't fit perfectly, they fit surprisingly well.
+
+And hopefully, Pain Tetris will leave you unable to play normal tetris again without becoming deathly bored.
+
+## Description
+
+A twist on tetris which will likely (hopefully?) cause a lot of pain and suffering.
 
   * Uses ClojureScript, Quil and Om
 

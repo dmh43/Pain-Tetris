@@ -13,5 +13,5 @@
                     :onClick (fn []
                                (swap! t/grid g/clear-grid)
                                (reset! g/piece-counter 0)
-                               (t/start-game))}
+                               (t/start-game @t/block-speed))}
                (r/glyphicon {:glyph "refresh"})))))

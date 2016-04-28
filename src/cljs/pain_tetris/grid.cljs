@@ -192,10 +192,12 @@
         x (int (- index (* y width)))]
     [x y]))
 
-(defn all-coords
+(defn all-coords-slow
   [grid]
   (map (partial index-to-coords grid)
        (range (apply * ((juxt :width :height) (dims grid))))))
+
+(def all-coords (memoize all-coords-slow))
 
 (defn full-row?
   [grid row-num]
@@ -219,8 +221,7 @@
                 (conj acc coords)
                 acc))
             []
-            (map (partial index-to-coords grid)
-                 (range (* width height))))))
+            (all-coords grid))))
 
 (defn get-column
   [grid x-index]
