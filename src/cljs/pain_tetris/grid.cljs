@@ -143,21 +143,21 @@
     (refresh-blocks grid blocks-below)))
 
 (defn remove-block-splitting-piece
-  [grid coords]
-  (let [new-grid (remove-block grid coords)
-        below (block-below grid coords)
-        above (block-above grid coords)
-        ur (block-ur grid coords)
-        ul (block-ul grid coords)]
-    (if (and below above)
-      (cond
-        (= above below)
-        (refresh-above new-grid coords)
-        (or (= ul below) (= ur below))
-        (refresh-below new-grid coords)
-        :else
-        new-grid)
-      new-grid)))
+  ([grid coords]
+   (let [new-grid (remove-block grid coords)
+         below (block-below grid coords)
+         above (block-above grid coords)
+         ur (block-ur grid coords)
+         ul (block-ul grid coords)]
+     (if (and below above)
+       (cond
+         (= above below)
+         (refresh-above new-grid coords)
+         (or (= ul below) (= ur below))
+         (refresh-below new-grid coords)
+         :else
+         new-grid)
+       new-grid))))
 
 (defn can-insert?
   [grid shape coords]

@@ -70,19 +70,22 @@
 
 (defn can-rotate?
   [grid piece-coords]
-  (every? (fn [coords]  (or (some #(= % coords) (rotation-destination grid piece-coords))
-                            (not (g/is-occupied? grid coords))))
-          restored-coords))
+  (let [restored-coords (rotation-destination grid piece-coords)]
+    (every? (fn [coords]  (or (some #(= % coords) restored-coords)
+                              (not (g/is-occupied? grid coords))))
+            restored-coords)))
 
 (defn rotate
   [grid piece-coords]
-  (if (every? (fn [coords] (or (some #(= % coords) piece-coords)
-                               (not (g/is-occupied? grid coords))))
-              (rotation-destination grid piece-coords))
-    (as-> grid new-grid
-      (reduce #(g/remove-block %1 %2) new-grid piece-coords)
-      (reduce #(g/place-block %1 %2 elem) new-grid restored-coords))
-    grid))
+  (let [elem (g/get-block grid (first piece-coords))
+        restored-coords (rotation-destination grid piece-coords)]
+    (if (every? (fn [coords] (or (some #(= % coords) piece-coords)
+                                 (not (g/is-occupied? grid coords))))
+                restored-coords)
+      (as-> grid new-grid
+        (reduce #(g/remove-block %1 %2) new-grid piece-coords)
+        (reduce #(g/place-block %1 %2 elem) new-grid restored-coords))
+      grid)))
 
 (defn slam-piece
   [grid piece-num dir]
