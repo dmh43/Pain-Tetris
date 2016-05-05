@@ -13,5 +13,11 @@
                     :onClick (fn []
                                (swap! t/grid g/clear-grid)
                                (reset! g/piece-counter 0)
+                               (reset! t/block-speed 1)
+                               (reset! t/turn-counter 0)
+                               (reset! t/drop-side :top)
+                               (reset! t/gravity-direction :down)
+                               (reset! t/points 0)
+                               (js/clearInterval @t/timer)
                                (t/start-game @t/block-speed))}
                (r/glyphicon {:glyph "refresh"})))))
