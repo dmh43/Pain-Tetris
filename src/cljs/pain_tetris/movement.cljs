@@ -56,34 +56,33 @@
           grid
           (g/all-pieces grid)))
 
-(defn rotation-destination
+(defn rotate-about-origin
   [coords]
   (mapv * [1 -1] (reverse coords)))
 
-(defn can-rotate?
+(defn rotation-destination
   [grid piece-coords]
   (let [origin (g/get-points-center piece-coords)
         shifted-coords (mapv #(g/sub % origin) piece-coords)
-        rotated-coords (mapv rotation-destination shifted-coords)
+        rotated-coords (mapv rotate-about-origin shifted-coords)
         restored-coords (mapv #(g/add % origin) rotated-coords)]
-    (every? (fn [coords]  (or (some #(= % coords) restored-coords)
-                              (not (g/is-occupied? grid coords))))
-            restored-coords)))
+    restored-coords))
+
+(defn can-rotate?
+  [grid piece-coords]
+  (every? (fn [coords]  (or (some #(= % coords) (rotation-destination grid piece-coords))
+                            (not (g/is-occupied? grid coords))))
+          restored-coords))
 
 (defn rotate
   [grid piece-coords]
-  (let [elem (g/get-block grid (first piece-coords))
-        origin (g/get-points-center piece-coords)
-        shifted-coords (mapv #(g/sub % origin) piece-coords)
-        rotated-coords (mapv rotation-destination shifted-coords)
-        restored-coords (mapv #(g/add % origin) rotated-coords)]
-    (if (every? (fn [coords] (or (some #(= % coords) piece-coords)
-                                 (not (g/is-occupied? grid coords))))
-                  restored-coords)
-      (as-> grid new-grid
-        (reduce #(g/remove-block %1 %2) new-grid piece-coords)
-        (reduce #(g/place-block %1 %2 elem) new-grid restored-coords))
-      grid)))
+  (if (every? (fn [coords] (or (some #(= % coords) piece-coords)
+                               (not (g/is-occupied? grid coords))))
+              (rotation-destination grid piece-coords))
+    (as-> grid new-grid
+      (reduce #(g/remove-block %1 %2) new-grid piece-coords)
+      (reduce #(g/place-block %1 %2 elem) new-grid restored-coords))
+    grid))
 
 (defn slam-piece
   [grid piece-num dir]
