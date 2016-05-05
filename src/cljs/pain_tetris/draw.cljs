@@ -28,7 +28,7 @@
     (doseq [block column
             y-index (range height)]
       (let [y-pos (* y-index block-size)
-            piece-num (get-in grid [x-index y-index])]
+            piece-num (g/get-block grid [x-index y-index])]
         (when (g/is-occupied? grid [x-index y-index])
           (draw-block x-pos y-pos (piece-num-to-color piece-num)))))))
 

@@ -23,8 +23,9 @@
   (let [blocks (g/piece-num-to-coords grid piece-num)]
     (when ((complement empty?) blocks)
       (every? (fn [block]
-                (or (some #(= % (move-block-destination grid block dir)) blocks)
-                    (block-can-move? grid block dir)))
+                (let [destination-blocks (move-block-destination grid block dir)]
+                  (or (some #(= % destination-blocks) blocks)
+                      (block-can-move? grid block dir))))
               blocks))))
 
 (defn move
@@ -71,7 +72,7 @@
 
 (defn rotate
   [grid piece-coords]
-  (let [elem (get-in grid (first piece-coords))
+  (let [elem (g/get-block grid (first piece-coords))
         origin (g/get-points-center piece-coords)
         shifted-coords (mapv #(g/sub % origin) piece-coords)
         rotated-coords (mapv rotation-destination shifted-coords)

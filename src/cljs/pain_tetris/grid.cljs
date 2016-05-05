@@ -32,9 +32,15 @@
              (repeat (vec (take height
                                 (repeat :_)))))))
 
+(defn get-block
+  [grid coords]
+  (let [column (get grid (first coords))
+        elem (get column (second coords))]
+    elem))
+
 (defn is-occupied?
   [grid coords]
-  (not (= (get-in grid coords) :_)))
+  (not= (get-block grid coords) :_))
 
 (defn place-block
   [grid coords elem]
@@ -70,27 +76,27 @@
 
 (defn block-below
   [grid coords]
-  (get-in grid (coords-below coords)))
+  (get-block grid (coords-below coords)))
 
 (defn block-above
   [grid coords]
-  (get-in grid (coords-above coords)))
+  (get-block grid (coords-above coords)))
 
 (defn block-left
   [grid coords]
-  (get-in grid (coords-left coords)))
+  (get-block grid (coords-left coords)))
 
 (defn block-right
   [grid coords]
-  (get-in grid (coords-right coords)))
+  (get-block grid (coords-right coords)))
 
 (defn block-ur
   [grid coords]
-  (get-in grid (coords-ur coords)))
+  (get-block grid (coords-ur coords)))
 
 (defn block-ul
   [grid coords]
-  (get-in grid (coords-ul coords)))
+  (get-block grid (coords-ul coords)))
 
 (defn remove-block
   [grid coords]
@@ -98,7 +104,7 @@
 
 (defn get-contig-blocks
   [grid coords]
-  (let [piece-num (get-in grid coords)]
+  (let [piece-num (get-block grid coords)]
     (let [below (block-below grid coords)
           left (block-left grid coords)
           right (block-right grid coords)
@@ -114,7 +120,7 @@
   [grid blocks]
   (let [new-grid
         (reduce (fn [acc coords]
-                  (let [block (get-in acc coords)]
+                  (let [block (get-block acc coords)]
                     (if (not= :_ block)
                       (assoc-in acc coords @piece-counter)
                       acc)))
@@ -217,7 +223,7 @@
   [grid piece-num]
   (let [{:keys [width height]} (dims grid)]
     (reduce (fn [acc coords]
-              (if (= piece-num (get-in grid coords))
+              (if (= piece-num (get-block grid coords))
                 (conj acc coords)
                 acc))
             []
