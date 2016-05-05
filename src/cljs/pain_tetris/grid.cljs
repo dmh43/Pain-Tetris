@@ -122,12 +122,10 @@
         (reduce (fn [acc coords]
                   (let [block (get-block acc coords)]
                     (if (not= :_ block)
-                      (assoc-in acc coords @piece-counter)
+                      (assoc-in acc coords (- @piece-counter))
                       acc)))
                 grid
                 blocks)]
-    (increment-piece-counter)
-    (increment-piece-counter)
     new-grid))
 
 (defn refresh-above
@@ -275,7 +273,7 @@
 
 (defn all-pieces
   [grid]
-  (range (inc (get-piece-counter))))
+  (range (- (inc (get-piece-counter))) (inc (get-piece-counter))))
 
 (defn get-current-piece
   []

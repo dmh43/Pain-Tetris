@@ -18,7 +18,7 @@
 
 (defn piece-num-to-color
   [num]
-  (q/color (* 255 (/ num (g/get-piece-counter))) 200 255 100))
+  (q/color (* 255 (/ (Math/abs num) (g/get-piece-counter))) 200 255 100))
 
 (defn- draw-column
   [grid x-index]
