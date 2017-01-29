@@ -1,6 +1,7 @@
 (ns pain-tetris.core
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
+            [pain-tetris.movement :as mo]
             [pain-tetris.pieces :as p]
             [pain-tetris.util :as util]
             [pain-tetris.movement :as mo]
@@ -47,6 +48,24 @@
   []
   (swap! t/timer js/clearInterval))
 
+;; FIXME: This method is here due to a quil bug not calling handler if
+;; in another ns
+(defn mouse-pressed
+  [state event]
+  (let [x (q/mouse-x)
+        y (q/mouse-y)
+        piece-num (g/get-current-piece)]
+    (if (and (> y 200) (< y 500))
+      (if (> x 150)
+        (when (mo/can-move? @t/grid piece-num :right)
+          (swap! t/grid #(mo/move % piece-num :right)))
+        (when (mo/can-move? @t/grid piece-num :left)
+          (swap! t/grid #(mo/move % piece-num :left))))
+      (if (> y 350)
+        (swap! t/grid #(mo/slam-piece % piece-num @t/gravity-direction))
+        (swap! t/grid #(mo/rotate % (g/piece-num-to-coords @t/grid piece-num))))))
+  state)
+
 (q/defsketch canvas
   :host "canvas"
   :size (d/canvas-size t/grid-dims)
@@ -54,6 +73,7 @@
   :update update-state
   :draw draw-state
   :key-pressed t/key-pressed
+  :mouse-pressed mouse-pressed
   :middleware [m/fun-mode]
   :features [:global-key-events]
   :settings q/smooth)
