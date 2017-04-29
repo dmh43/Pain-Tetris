@@ -12,6 +12,8 @@
             [om.dom :as dom]
             [om.core :as om]))
 
+(.log js/console "hiii")
+
 (set! (.-onload js/window)
       #(om/root c.r/root-component t/points
                 {:target (. js/document (getElementById "painTetris"))}))
