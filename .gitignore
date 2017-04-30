@@ -13,3 +13,8 @@ out/
 /figwheel_server.log
 /.projectile
 /dev/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
