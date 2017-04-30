@@ -11,10 +11,13 @@
                  [org.clojure/core.async  "0.3.442" :exclusions [org.clojure/tools.reader]]
                  [racehub/om-bootstrap "0.5.0"]
                  [quil "2.6.0"]
-                 [org.omcljs/om "1.0.0-alpha28"]]
-
+                 [org.omcljs/om "1.0.0-alpha28"]
+                 [compojure "1.5.1"]
+                 [ring/ring-defaults "0.2.1"]]
+  :ring {:handler pain-tetris.server/app}
   :plugins [[lein-figwheel "0.5.10"]
-            [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]]
+            [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]
+            [lein-ring "0.9.7"]]
 
   :source-paths ["src"]
 
