@@ -19,12 +19,13 @@
                 {:target (. js/document (getElementById "painTetris"))}))
 
 (defn setup []
-  ; Set frame rate to 30 frames per second.
-  (q/frame-rate 5)
-  ; Set color mode to HSB (HSV) instead of default RGB.
+  ;; Set frame rate to 30 frames per second.
+  (q/frame-rate 10)
+  ;; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
   (t/start-game @t/block-speed)
   {:color 0
+   :last-grid (atom)
    :game (apply q/create-graphics (d/game-size t/grid-dims))
    :border (apply q/create-graphics (d/canvas-size t/grid-dims))})
 
@@ -33,18 +34,20 @@
 
 (defn draw-state [state]
   (let [game (get state :game)
-        border (get state :border)]
-    (.beginDraw border)
-    (q/background 255 255 255 0)
-    (.endDraw border)
-    (.beginDraw game)
-    (q/fill 255)
-    (d/clear-game t/grid-dims)
-    (q/stroke-weight 0)
-    (q/stroke-join :round)
-    (d/draw-grid @t/grid)
-    (.endDraw game)
-    ))
+        border (get state :border)
+        last-grid (get state :last-grid)]
+    (when (not (= @last-grid @t/grid))
+      (reset! last-grid @t/grid)
+      (.beginDraw border)
+      (q/background 255 255 255 0)
+      (.endDraw border)
+      (.beginDraw game)
+      (q/fill 255)
+      (d/clear-game t/grid-dims)
+      (q/stroke-weight 0)
+      (q/stroke-join :round)
+      (d/draw-grid @t/grid)
+      (.endDraw game))))
 
 (defn on-js-reload
   []
