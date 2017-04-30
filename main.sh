@@ -8,4 +8,4 @@ export PATH
 wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
 chmod a+x ./lein
 ./lein
-./lein ring server 80
+LEIN_NO_DEV=true ./lein ring server-headless 80
