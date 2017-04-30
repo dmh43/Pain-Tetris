@@ -20,7 +20,7 @@
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
-  (q/frame-rate 10)
+  (q/frame-rate 5)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
   (t/start-game @t/block-speed)
@@ -46,7 +46,7 @@
     (.endDraw game)
     ))
 
-(defn fig-reload-hook
+(defn on-js-reload
   []
   (swap! t/timer js/clearInterval))
 
@@ -78,4 +78,5 @@
   :mouse-pressed mouse-pressed
   :middleware [m/fun-mode]
   :features [:global-key-events]
-  :settings q/smooth)
+  ;; :settings q/smooth
+  )
